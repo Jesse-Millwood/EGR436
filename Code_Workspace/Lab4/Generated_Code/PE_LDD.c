@@ -5,7 +5,7 @@
 **     Processor   : MK64FN1M0VLL12
 **     Version     : Component 01.045, Driver 01.00, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2015-02-01, 19:36, # CodeGen: 2
+**     Date/Time   : 2015-02-08, 10:27, # CodeGen: 22
 **
 **     Copyright : 1997 - 2014 Freescale Semiconductor, Inc. 
 **     All Rights Reserved.
@@ -62,7 +62,10 @@
 ** Array of initialized device structures of LDD components.
 ** ===========================================================================
 */
-LDD_TDeviceData *PE_LDD_DeviceDataList[7] = {
+LDD_TDeviceData *PE_LDD_DeviceDataList[10] = {
+    NULL,
+    NULL,
+    NULL,
     NULL,
     NULL,
     NULL,
@@ -203,6 +206,10 @@ bool PE_PeripheralUsed(uint32_t PrphBaseAddress)
     case 0x400FF0C0UL:
     /* Base address allocated by peripheral(s) FTM0 */
     case 0x40038000UL:
+    /* Base address allocated by peripheral(s) PTB */
+    case 0x400FF040UL:
+    /* Base address allocated by peripheral(s) FTM1 */
+    case 0x40039000UL:
       result = TRUE;
       break;
     default:
@@ -240,6 +247,10 @@ void LDD_SetClockConfiguration(LDD_TClockConfiguration ClockConfiguration)
   /* Component Timer (TimerUnit_LDD). */
   if (PE_LDD_DeviceDataList[PE_LDD_COMPONENT_Timer_ID] != NULL) {
     Timer_SetClockConfiguration(PE_LDD_DeviceDataList[PE_LDD_COMPONENT_Timer_ID], ClockConfiguration);
+  }
+  /* Component OneWireTimer (TimerUnit_LDD). */
+  if (PE_LDD_DeviceDataList[PE_LDD_COMPONENT_OneWireTimer_ID] != NULL) {
+    OneWireTimer_SetClockConfiguration(PE_LDD_DeviceDataList[PE_LDD_COMPONENT_OneWireTimer_ID], ClockConfiguration);
   }
   Temp_SetClockConfiguration(ClockConfiguration);
   Photocell_SetClockConfiguration(ClockConfiguration);

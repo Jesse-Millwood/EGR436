@@ -41,6 +41,7 @@ extern "C" {
 #include "PhotoCell.h"
 #include "TempProbe.h"
 #include "Globals.h"
+#include "OneWire.h"
 
 /*
 ** ===================================================================
@@ -183,6 +184,63 @@ void Timer_OnCounterRestart(LDD_TUserData *UserDataPtr)
 	if(!oneSecondFlag)
 	{
 		oneSecondFlag = ON;
+	}
+}
+
+/*
+** ===================================================================
+**     Event       :  OneWireTimer_OnCounterRestart (module Events)
+**
+**     Component   :  OneWireTimer [TimerUnit_LDD]
+*/
+/*!
+**     @brief
+**         Called if counter overflow/underflow or counter is
+**         reinitialized by modulo or compare register matching.
+**         OnCounterRestart event and Timer unit must be enabled. See
+**         [SetEventMask] and [GetEventMask] methods. This event is
+**         available only if a [Interrupt] is enabled.
+**     @param
+**         UserDataPtr     - Pointer to the user or
+**                           RTOS specific data. The pointer passed as
+**                           the parameter of Init method.
+*/
+/* ===================================================================*/
+void OneWireTimer_OnCounterRestart(LDD_TUserData *UserDataPtr)
+{
+  // Restarts every 5us
+	if(DS18B20.status == RESET1)
+	{
+		DS18B20.count_current ++;
+	}
+}
+
+/*
+** ===================================================================
+**     Event       :  OneWireDataInt_OnInterrupt (module Events)
+**
+**     Component   :  OneWireDataInt [ExtInt]
+**     Description :
+**         This event is called when an active signal edge/level has
+**         occurred.
+**     Parameters  : None
+**     Returns     : Nothing
+** ===================================================================
+*/
+void OneWireDataInt_OnInterrupt(void)
+{
+	// On Falling edge
+	if(DS18B20.status == RESET0)
+	{
+		// reset device counter
+		DS18B20.count_current = 0;
+		OneWireDataInt_SetEdge(1);	// set for rising edge
+		DS18B20.status = RESET1;
+	}
+	else if(DS18B20.status == RESET1)
+	{
+		DS18B20.presence_us = DS18B20.count_current * 5;
+		DS18B20.txReadyFlag = TRUE;
 	}
 }
 

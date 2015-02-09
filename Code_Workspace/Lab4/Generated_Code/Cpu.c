@@ -7,7 +7,7 @@
 **     Version     : Component 01.045, Driver 01.00, CPU db: 3.00.000
 **     Datasheet   : K64P144M120SF5RM, Rev.2, January 2014
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2015-02-02, 19:41, # CodeGen: 9
+**     Date/Time   : 2015-02-08, 10:33, # CodeGen: 23
 **     Abstract    :
 **
 **     Settings    :
@@ -124,6 +124,10 @@ void Components_Init(void)
   PDC1_Init();
   /* ### TimerUnit_LDD "Timer" component auto initialization. Auto initialization feature can be disabled by component property "Auto initialization". */
   (void)Timer_Init(NULL);
+  /* ### BitIO_LDD "BitIoLdd1" component auto initialization. Auto initialization feature can be disabled by component property "Auto initialization". */
+  (void)BitIoLdd1_Init(NULL);
+  /* ### ExtInt_LDD "ExtIntLdd1" component auto initialization. Auto initialization feature can be disabled by component property "Auto initialization". */
+  (void)ExtIntLdd1_Init(NULL);
 }
 #endif /* CPU_COMPONENTS_INIT */
 

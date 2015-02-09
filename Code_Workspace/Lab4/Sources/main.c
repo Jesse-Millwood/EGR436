@@ -42,6 +42,12 @@
 #include "WAIT1.h"
 #include "SM1.h"
 #include "Timer.h"
+#include "OneWireData.h"
+#include "BitIoLdd1.h"
+#include "OneWireWait.h"
+#include "OneWireDataInt.h"
+#include "ExtIntLdd1.h"
+#include "OneWireTimer.h"
 /* Including shared modules, which are used for whole project */
 #include "PE_Types.h"
 #include "PE_Error.h"
@@ -55,6 +61,8 @@
 #include "TempProbe.h"
 #include "PhotoCell.h"
 #include "stdio.h"
+#include "OneWire.h"
+#include "math.h"
 
 
 /*lint -save  -e970 Disable MISRA rule (6.3) checking. */
@@ -65,6 +73,9 @@ int main(void)
   char tempStr[14];
   char pcellStr[14];
   char dataStr[14];
+  uint8_t temparray[9];
+  uint16_t DStemp;
+  float DStempF;
 
   /*** Processor Expert internal initialization. DON'T REMOVE THIS CODE!!! ***/
   PE_low_level_init();
@@ -88,6 +99,8 @@ int main(void)
   PDC1_SplashScreen();
   WAIT1_Waitms(2000);
   PDC1_Clear();
+
+  init_OneWireDev(&DS18B20);
 
 
   PDC1_WriteLineStr(1,"  Conditions  ");
@@ -116,6 +129,8 @@ int main(void)
 		  // Reset second flag
 		  oneSecondFlag = OFF;
 	  }
+
+
 	  if(photoCell.lux>=1000)
 	  {
 		  PDC1_Sun(32,1);
@@ -135,6 +150,29 @@ int main(void)
 	  // Display Strings
 	  PDC1_WriteLineStr(4," Temp |  LUX  ");
 	  PDC1_WriteLineStr(5,dataStr);
+
+	  /*
+	  getTemp_OneWireDev(&DS18B20);
+	  for(uint8_t k=0; k<9; k++)
+	  {
+		  temparray[k] = DS18B20.scratchpad[k];
+	  }
+	  DStemp = DS18B20.scratchpad[0];
+	  DStemp = DStemp<<8;
+	  DStemp |= DS18B20.scratchpad[1];
+	  DStemp &= 0x7F; // I know it is positive so lop off the sign bits
+
+
+	  uint8_t index = 0;
+	  DStempF = 0.0;
+	  for(int8_t i=-4;i<11;i++)
+	  {
+		  DStempF += ((DStemp>>index)&0x01)*powf(2,i);
+		  index ++;
+	  }
+	  snprintf(tempStr,14,"T:%07.2f",DStempF);
+	  PDC1_WriteLineStr(3,tempStr);
+	  */
   }
 
   /*** Don't write any code pass this line, or it will be deleted during code generation. ***/
