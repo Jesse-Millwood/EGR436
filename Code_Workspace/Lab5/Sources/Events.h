@@ -59,6 +59,7 @@
 #include "Photocell.h"
 #include "AdcLdd2.h"
 #include "Timer.h"
+#include "UTIL2.h"
 
 #ifdef __cplusplus
 extern "C" {

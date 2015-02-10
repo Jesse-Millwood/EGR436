@@ -9,6 +9,7 @@
 #include "LoggerApp.h"
 #include "stdio.h"
 #include "PE_Types.h"
+#include "UTIL2.h"
 
 void Err(void)
 {
@@ -37,12 +38,14 @@ void LogToFile(void)
 {
 	/* Local Variables */
 	char write_buf[WRITE_BUFFER_LENGTH];
+	char temp_buff[WRITE_BUFFER_LENGTH];
 	uint8_t buflen;
 	UINT bw;
 	TIMEREC time;
+	DATEREC date;
 
 	/* Open File */
-	if(FAT1_open(&fp, "./log.txt", FA_OPEN_ALWAYS|FA_WRITE) != FR_OK)
+	if(FAT1_open(&fp, "./log.csv", FA_OPEN_ALWAYS|FA_WRITE) != FR_OK)
 	{
 		Err();
 	}
@@ -57,10 +60,17 @@ void LogToFile(void)
 		Err();
 	}
 	/* write data */
-	buflen = snprintf(write_buf,WRITE_BUFFER_LENGTH,"\0%i:%i:%i,%%05.1f,%07.4f\n",
-					time.Hour,time.Min,time.Sec,tempProbe.tempF,photoCell.lux);
 
-	if (FAT1_write(&fp, write_buf, buflen, &bw)!=FR_OK)
+	write_buf[0] = '\0';
+	snprintf(temp_buff, WRITE_BUFFER_LENGTH,
+					"%i/%i/%i,%i:%i:%i,%05.1f,%07.4f\r\n",
+					date.Month, date.Day, date.Year,
+					time.Hour,time.Min,time.Sec,
+					tempProbe.tempF,photoCell.lux);
+	strcat(write_buf,temp_buff);
+
+
+	if (FAT1_write(&fp, write_buf, strlen(write_buf), &bw)!=FR_OK)
 	{
 	    (void)FAT1_close(&fp);
 	    Err();

@@ -74,6 +74,7 @@
 #include "Photocell.h"
 #include "AdcLdd2.h"
 #include "Timer.h"
+#include "UTIL2.h"
 #include "Events.h"
 
 #ifdef __cplusplus

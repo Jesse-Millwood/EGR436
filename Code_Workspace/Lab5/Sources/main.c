@@ -55,6 +55,7 @@
 #include "Photocell.h"
 #include "AdcLdd2.h"
 #include "Timer.h"
+#include "UTIL2.h"
 /* Including shared modules, which are used for whole project */
 #include "PE_Types.h"
 #include "PE_Error.h"
@@ -99,7 +100,11 @@ int main(void)
     photoCell.adcflag = FALSE;
     padcval = 0.0;
 
+    // Initialize file for sd card
     init_File();
+    // Initialize date
+    TmDt1_SetDate(2016,2,9);
+    TmDt1_SetTime(7,58,30,0);
 
     PDC1_SplashScreen();
     WAIT1_Waitms(2000);
@@ -156,7 +161,7 @@ int main(void)
   	  PDC1_WriteLineStr(4," Temp |  LUX  ");
   	  PDC1_WriteLineStr(5,dataStr);
 
-  	  if(cnt>=30)
+  	  if(cnt>=10)
   	  {
   		  Err();
   	  }
